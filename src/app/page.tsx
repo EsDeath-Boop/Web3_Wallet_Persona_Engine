@@ -1,6 +1,20 @@
+"use client";
+
+import { useState } from 'react';
+import { Box, Container } from '@chakra-ui/react';
 import Image from "next/image";
+import WalletConnect from '../components/WalletConnect';
+import PersonaDisplay from '../components/PersonaDisplay';
+import { useWalletPersona } from '../hooks/useWalletPersona';
 
 export default function Home() {
+  const [connectedAddress, setConnectedAddress] = useState<string | null>(null);
+  const { persona, loading, error } = useWalletPersona(connectedAddress);
+
+  const handleWalletConnected = (address: string) => {
+    setConnectedAddress(address);
+  };
+
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
@@ -24,6 +38,23 @@ export default function Home() {
             Save and see your changes instantly.
           </li>
         </ol>
+
+        {/* Wallet Connect Button */}
+        <Box mb={8}>
+          <WalletConnect onWalletConnected={handleWalletConnected} />
+        </Box>
+
+        {/* Error Display */}
+        {error && (
+          <Box p={4} bg="red.100" color="red.800" borderRadius="md" mb={8}>
+            Error: {error}
+          </Box>
+        )}
+
+        {/* Persona Display */}
+        {connectedAddress && (
+          <PersonaDisplay persona={persona} loading={loading} />
+        )}
 
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <a
@@ -51,6 +82,8 @@ export default function Home() {
           </a>
         </div>
       </main>
+
+      {/* Footer Section */}
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
         <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"
