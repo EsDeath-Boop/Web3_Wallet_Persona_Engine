@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from 'react';
-import { Box, Container } from '@chakra-ui/react';
 import Image from "next/image";
 import WalletConnect from '../components/WalletConnect';
 import PersonaDisplay from '../components/PersonaDisplay';
 import { useWalletPersona } from '../hooks/useWalletPersona';
+import { css } from '../../styled-system/css';
 
 export default function Home() {
   const [connectedAddress, setConnectedAddress] = useState<string | null>(null);
@@ -26,6 +26,11 @@ export default function Home() {
           height={38}
           priority
         />
+        
+        <div className={css({ fontSize: '2xl', color: 'brand.500', p: 4 })}>
+          🐼 PandaCSS is working!
+        </div>
+        
         <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
           <li className="mb-2 tracking-[-.01em]">
             Get started by editing{" "}
@@ -35,20 +40,26 @@ export default function Home() {
             .
           </li>
           <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
+            
           </li>
         </ol>
 
         {/* Wallet Connect Button */}
-        <Box mb={8}>
+        <div className={css({ mb: 8 })}>
           <WalletConnect onWalletConnected={handleWalletConnected} />
-        </Box>
+        </div>
 
         {/* Error Display */}
         {error && (
-          <Box p={4} bg="red.100" color="red.800" borderRadius="md" mb={8}>
+          <div className={css({ 
+            p: 4, 
+            bg: 'red.100', 
+            color: 'red.800', 
+            borderRadius: 'md', 
+            mb: 8 
+          })}>
             Error: {error}
-          </Box>
+          </div>
         )}
 
         {/* Persona Display */}

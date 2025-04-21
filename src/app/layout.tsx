@@ -1,5 +1,5 @@
 import './globals.css';
-import { ChakraProviders } from '../components/ChakraProviders';
+import '../../styled-system/styles.css';  // Import Panda CSS global styles
 
 export default function RootLayout({
   children,
@@ -9,8 +9,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ChakraProviders>{children}</ChakraProviders>
+        {children}
       </body>
     </html>
   );
 }
+// This layout loads the global styles including PandaCSS styles.

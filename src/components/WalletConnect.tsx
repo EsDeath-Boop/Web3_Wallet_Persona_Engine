@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
-import { Button, Input, Box, Text, VStack, HStack } from '@chakra-ui/react'
-import { useToast } from '@chakra-ui/react'
+import { css } from '@/styled-system/css'
+import { flex, vstack, hstack } from '@/styled-system/patterns'
 import { createWalletClient, custom } from 'viem'
 import { mainnet } from 'viem/chains'
 
@@ -12,17 +12,10 @@ interface WalletConnectProps {
 const WalletConnect = ({ onWalletConnected }: WalletConnectProps) => {
   const [manualAddress, setManualAddress] = useState('')
   const [isConnecting, setIsConnecting] = useState(false)
-  const toast = useToast()
-
+  
   const connectWallet = async () => {
-    if (typeof window.ethereum === 'undefined') {
-      toast({
-        title: 'MetaMask not detected',
-        description: 'Please install MetaMask to connect your wallet.',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      })
+    if (typeof (window as any).ethereum === 'undefined') {
+      console.error('MetaMask not detected. Please install MetaMask to connect your wallet.')
       return
     }
 
@@ -31,44 +24,26 @@ const WalletConnect = ({ onWalletConnected }: WalletConnectProps) => {
       
       const walletClient = createWalletClient({
         chain: mainnet,
-        transport: custom(window.ethereum)
+        transport: custom((window as any).ethereum)
       })
       
       const [address] = await walletClient.requestAddresses()
       
       onWalletConnected(address)
       
-      toast({
-        title: 'Wallet connected',
-        description: `Connected to ${address.substring(0, 6)}...${address.substring(address.length - 4)}`,
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-      })
+      console.log(`Wallet connected: ${address.substring(0, 6)}...${address.substring(address.length - 4)}`)
     } catch (error) {
       console.error('Error connecting wallet:', error)
-      toast({
-        title: 'Connection failed',
-        description: 'Failed to connect wallet. Please try again.',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      })
+      console.error('Failed to connect wallet. Please try again.')
     } finally {
       setIsConnecting(false)
     }
   }
-
+  
   const analyzeManualAddress = () => {
     // Simple validation for Ethereum address format
     if (!/^0x[a-fA-F0-9]{40}$/.test(manualAddress)) {
-      toast({
-        title: 'Invalid address',
-        description: 'Please enter a valid Ethereum address',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      })
+      console.error('Invalid address. Please enter a valid Ethereum address')
       return
     }
 
@@ -76,34 +51,62 @@ const WalletConnect = ({ onWalletConnected }: WalletConnectProps) => {
   }
 
   return (
-    <VStack spacing={6} w="100%" p={4}>
-      <Box w="100%">
-        <Button 
-          colorScheme="blue" 
-          onClick={connectWallet} 
-          isLoading={isConnecting}
-          size="lg"
-          width="100%"
+    <div className={vstack({ gap: '6', w: '100%', p: '4' })}>
+      <div className={css({ w: '100%' })}>
+        <button 
+          className={css({
+            bg: 'blue.500',
+            color: 'white',
+            fontWeight: 'bold',
+            px: '4',
+            py: '2',
+            borderRadius: 'md',
+            w: '100%',
+            h: '12',
+            _hover: { bg: 'blue.600' },
+            _disabled: { opacity: 0.6, cursor: 'not-allowed' }
+          })}
+          onClick={connectWallet}
+          disabled={isConnecting}
         >
-          Connect MetaMask
-        </Button>
-      </Box>
+          {isConnecting ? 'Connecting...' : 'Connect MetaMask'}
+        </button>
+      </div>
       
-      <Text align="center">OR</Text>
+      <p className={css({ textAlign: 'center' })}>OR</p>
       
-      <Box w="100%">
-        <HStack>
-          <Input 
+      <div className={css({ w: '100%' })}>
+        <div className={hstack({ gap: '2', w: '100%' })}>
+          <input 
+            className={css({
+              flex: '1',
+              p: '2',
+              borderWidth: '1px',
+              borderColor: 'gray.300',
+              borderRadius: 'md',
+              _focus: { borderColor: 'blue.500', outline: 'none' }
+            })}
             placeholder="Enter wallet address" 
             value={manualAddress} 
             onChange={(e) => setManualAddress(e.target.value)}
           />
-          <Button onClick={analyzeManualAddress} colorScheme="blue">
+          <button 
+            className={css({
+              bg: 'blue.500',
+              color: 'white',
+              fontWeight: 'bold',
+              px: '4',
+              py: '2',
+              borderRadius: 'md',
+              _hover: { bg: 'blue.600' }
+            })}
+            onClick={analyzeManualAddress}
+          >
             Analyze
-          </Button>
-        </HStack>
-      </Box>
-    </VStack>
+          </button>
+        </div>
+      </div>
+    </div>
   )
 }
 

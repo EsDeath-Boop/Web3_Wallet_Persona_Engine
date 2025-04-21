@@ -4,9 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run panda:css && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "panda:codegen": "panda codegen",
+    "panda:css": "panda css",
+    "panda:watch": "panda --watch",
+    "prepare": "panda codegen"
   },
   "dependencies": {
     "@chakra-ui/react": "^3.16.0",
@@ -28,6 +32,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@pandacss/dev": "^0.53.4",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

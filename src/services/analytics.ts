@@ -180,7 +180,7 @@ function determineWalletCategory(
   txHistory: TransactionData[]
 ): WalletCategory {
   // Calculate scores for each category
-  let scores: Record<WalletCategory, number> = {
+  const scores: Record<WalletCategory, number> = {
     'Trader': 0,
     'Collector': 0,
     'Hodler': 0,
